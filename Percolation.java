@@ -2,7 +2,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 
-    public int[] grid;
+    public boolean[] grid;
     public int gridDimension;
     public int numberOfOpenSites;
     public WeightedQuickUnionUF weightedQU;
@@ -15,16 +15,16 @@ public class Percolation {
         this.grid = this.createGrid();
         this.numberOfOpenSites = 0;
         this.weightedQU = new WeightedQuickUnionUF(this.gridDimension * this.gridDimension + 2);
-        this.virtualTopSite = n * n + 1;
-        this.virtualBottomSite = n * n + 2;
+        this.virtualTopSite = n * n;
+        this.virtualBottomSite = n * n + 1;
         this.connectTopSitesToVirtualTop();
         this.connectBottomSitesToVirtualBottom();
     }
 
     private void connectBottomSitesToVirtualBottom() {
-        int firstBottowRowIndex = this.findSiteIndexFromRowAndColumn(1, this.gridDimension);
-        int lastBottomRowIndex = (this.gridDimension * this.gridDimension);
-        for (int i = firstBottowRowIndex; i < lastBottomRowIndex; i++) {
+        int firstBottowRowIndex = this.findSiteIndexFromRowAndColumn(this.gridDimension, 1);
+        int lastBottomRowIndexPlusOne = (this.gridDimension * this.gridDimension);
+        for (int i = firstBottowRowIndex; i < lastBottomRowIndexPlusOne; i++) {
             this.weightedQU.union(i, this.virtualBottomSite);
         }
     }
@@ -35,33 +35,35 @@ public class Percolation {
         }
     }
 
-    private int[] createGrid() {
+    private boolean[] createGrid() {
         int gridSize = this.gridDimension * this.gridDimension;
-        return new int[gridSize];
+        return new boolean[gridSize];
     }
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
         int indexOfSiteToOpen = this.findSiteIndexFromRowAndColumn(row, col);
-
-        int[] adjacentSitesIndexes = this.getAdjacentSites(row, col);
-
-    }
-
-    public int[] getAdjacentSites(int row, int col) {
-
+        if (row > 1 && row < this.gridDimension && col > 1 && col < this.gridDimension) {
+            this.weightedQU.union(indexOfSiteToOpen,
+                                  indexOfSiteToOpen - this.gridDimension);
+            this.weightedQU.union(indexOfSiteToOpen,
+                                  indexOfSiteToOpen + this.gridDimension);
+            this.weightedQU.union(indexOfSiteToOpen,
+                                  indexOfSiteToOpen + 1);
+            this.weightedQU.union(indexOfSiteToOpen,
+                                  indexOfSiteToOpen - 1);
+        }
+        this.grid[indexOfSiteToOpen] = true;
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
         int indexOfSiteToCheck = this.findSiteIndexFromRowAndColumn(row, col);
-        if (row * col < 24) {
-            return this.weightedQU
-                    .connected(this.grid[indexOfSiteToCheck], this.grid[indexOfSiteToCheck + 1]);
+        if (this.grid[indexOfSiteToCheck] == true) {
+            return true;
         }
         else {
-            return this.weightedQU
-                    .connected(this.grid[indexOfSiteToCheck], this.grid[indexOfSiteToCheck - 1]);
+            return false;
         }
     }
 
@@ -91,7 +93,14 @@ public class Percolation {
     public static void main(String[] args) {
         Percolation percolation = new Percolation(5);
         percolation.open(2, 4);
+        boolean result = percolation.weightedQU.connected(8, 9);
+        boolean result2 = percolation.weightedQU.connected(8, 13);
+        boolean result3 = percolation.weightedQU.connected(8, 7);
+        boolean result4 = percolation.weightedQU.connected(8, 3);
+        boolean result5 = percolation.isFull(2, 4);
+        boolean result6 = percolation.weightedQU.connected(8, 17);
         boolean open = percolation.isOpen(2, 4);
+        boolean percolates = percolation.percolates();
         System.out.println(open);
     }
 }
