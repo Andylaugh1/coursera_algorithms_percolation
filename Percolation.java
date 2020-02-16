@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+import java.util.ArrayList;
+
 public class Percolation {
 
     public boolean[] grid;
@@ -10,6 +12,11 @@ public class Percolation {
     public int virtualBottomSite;
 
     // creates n-by-n grid, with all sites initially blocked
+
+    /**
+     * @param n the number of sites
+     * @throws IllegalArgumentException if {@code n < 0}
+     */
     public Percolation(int n) {
         this.gridDimension = n;
         this.grid = this.createGrid();
@@ -42,35 +49,104 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        int indexOfSiteToOpen = this.findSiteIndexFromRowAndColumn(row, col);
-        if (row > 1 && row < this.gridDimension && col > 1 && col < this.gridDimension) {
-            this.weightedQU.union(indexOfSiteToOpen,
-                                  indexOfSiteToOpen - this.gridDimension);
-            this.weightedQU.union(indexOfSiteToOpen,
-                                  indexOfSiteToOpen + this.gridDimension);
-            this.weightedQU.union(indexOfSiteToOpen,
-                                  indexOfSiteToOpen + 1);
-            this.weightedQU.union(indexOfSiteToOpen,
-                                  indexOfSiteToOpen - 1);
+        if (row <= 0 || col <= 0) {
+            throw new IllegalArgumentException(
+                    "The column or row entered was invalid. Both must be an integer between 1 and "
+                            + this.gridDimension);
         }
-        this.grid[indexOfSiteToOpen] = true;
+        else {
+            int indexOfSiteToOpen = this.findSiteIndexFromRowAndColumn(row, col);
+            ArrayList<Integer> indexesOfAdjacentSites = getAdjacentSitesForSite(row, col);
+            if (this.grid[indexOfSiteToOpen] == false) {
+                for (int i = 0; i < indexesOfAdjacentSites.size(); i++) {
+                    int adjSiteIdx = indexesOfAdjacentSites.get(i);
+                    if (this.grid[adjSiteIdx] == true) {
+                        this.weightedQU.union(indexOfSiteToOpen, adjSiteIdx);
+                    }
+                }
+                this.grid[indexOfSiteToOpen] = true;
+            }
+        }
+    }
+
+    private ArrayList<Integer> getAdjacentSitesForSite(int row, int col) {
+        ArrayList<Integer> adjacentSites = new ArrayList<>();
+        int indexOfSite = this.findSiteIndexFromRowAndColumn(row, col);
+        if (row > 1 && row < this.gridDimension && col > 1 && col < this.gridDimension) {
+            adjacentSites.add(indexOfSite - 1);
+            adjacentSites.add(indexOfSite + 1);
+            adjacentSites.add(indexOfSite - this.gridDimension);
+            adjacentSites.add(indexOfSite + this.gridDimension);
+        }
+        else if (row == 1 && col == 1) {
+            adjacentSites.add(indexOfSite + this.gridDimension);
+            adjacentSites.add(indexOfSite + 1);
+
+        }
+        else if (row == 1 && col == this.gridDimension) {
+            adjacentSites.add(indexOfSite + this.gridDimension);
+            adjacentSites.add(indexOfSite - 1);
+        }
+        else if (row == this.gridDimension && col == 1) {
+            adjacentSites.add(indexOfSite - this.gridDimension);
+            adjacentSites.add(indexOfSite + 1);
+        }
+        else if (row == this.gridDimension && col == this.gridDimension) {
+            adjacentSites.add(indexOfSite - this.gridDimension);
+            adjacentSites.add(indexOfSite - 1);
+        }
+        else if (col == 1) {
+            adjacentSites.add(indexOfSite - this.gridDimension);
+            adjacentSites.add(indexOfSite + this.gridDimension);
+            adjacentSites.add(indexOfSite + 1);
+        }
+        else if (col == this.gridDimension) {
+            adjacentSites.add(indexOfSite - this.gridDimension);
+            adjacentSites.add(indexOfSite + this.gridDimension);
+            adjacentSites.add(indexOfSite - 1);
+        }
+        else if (row == 1) {
+            adjacentSites.add(indexOfSite - 1);
+            adjacentSites.add(indexOfSite + 1);
+            adjacentSites.add(indexOfSite + this.gridDimension);
+        }
+        else if (row == this.gridDimension) {
+            adjacentSites.add(indexOfSite - 1);
+            adjacentSites.add(indexOfSite + 1);
+            adjacentSites.add(indexOfSite - this.gridDimension);
+        }
+        return adjacentSites;
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-        int indexOfSiteToCheck = this.findSiteIndexFromRowAndColumn(row, col);
-        if (this.grid[indexOfSiteToCheck] == true) {
-            return true;
+        if (row <= 0 || col <= 0) {
+            throw new IllegalArgumentException(
+                    "The column or row entered was invalid. Both must be an integer between 1 and "
+                            + this.gridDimension);
         }
         else {
-            return false;
+            int indexOfSiteToCheck = this.findSiteIndexFromRowAndColumn(row, col);
+            if (this.grid[indexOfSiteToCheck] == true) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        int siteIndex = this.findSiteIndexFromRowAndColumn(row, col);
-        return this.weightedQU.connected(siteIndex, this.virtualTopSite);
+        if (row <= 0 || col <= 0) {
+            throw new IllegalArgumentException(
+                    "The column or row entered was invalid. Both must be an integer between 1 and "
+                            + this.gridDimension);
+        }
+        else {
+            int siteIndex = this.findSiteIndexFromRowAndColumn(row, col);
+            return this.weightedQU.connected(siteIndex, this.virtualTopSite);
+        }
     }
 
     // returns the number of open sites
@@ -93,6 +169,10 @@ public class Percolation {
     public static void main(String[] args) {
         Percolation percolation = new Percolation(5);
         percolation.open(2, 4);
+        percolation.open(3, 4);
+        percolation.open(4, 4);
+        percolation.open(5, 4);
+        percolation.open(1, 4);
         boolean result = percolation.weightedQU.connected(8, 9);
         boolean result2 = percolation.weightedQU.connected(8, 13);
         boolean result3 = percolation.weightedQU.connected(8, 7);

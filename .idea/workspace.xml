@@ -78,7 +78,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Percolation.java</url>
-          <line>93</line>
+          <line>169</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
