@@ -65,6 +65,7 @@ public class Percolation {
                     }
                 }
                 this.grid[indexOfSiteToOpen] = true;
+                this.numberOfOpenSites += 1;
             }
         }
     }
@@ -167,20 +168,6 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
-        Percolation percolation = new Percolation(5);
-        percolation.open(2, 4);
-        percolation.open(3, 4);
-        percolation.open(4, 4);
-        percolation.open(5, 4);
-        percolation.open(1, 4);
-        boolean result = percolation.weightedQU.connected(8, 9);
-        boolean result2 = percolation.weightedQU.connected(8, 13);
-        boolean result3 = percolation.weightedQU.connected(8, 7);
-        boolean result4 = percolation.weightedQU.connected(8, 3);
-        boolean result5 = percolation.isFull(2, 4);
-        boolean result6 = percolation.weightedQU.connected(8, 17);
-        boolean open = percolation.isOpen(2, 4);
-        boolean percolates = percolation.percolates();
-        System.out.println(open);
+
     }
 }
