@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.Stopwatch;
+
 public class PercolationStats {
 
     private int gridDimension;
@@ -28,6 +30,8 @@ public class PercolationStats {
     // test client (see below)
     public static void main(String[] args) {
 
+        Stopwatch stopwatch = new Stopwatch();
+
         PercolationStats percStats = new PercolationStats(50, 30);
         int n = 0;
         while (n < percStats.numberOfTrials) {
@@ -44,7 +48,7 @@ public class PercolationStats {
             percStats.runningTotalOpenSitesPerPerc += percolation.numberOfOpenSites;
         }
         System.out.println(
-                "The avaerage number of open sites when percolation occurs is " + percStats.mean());
+                "The average number of open sites when percolation occurs is " + percStats.mean());
+        stopwatch.elapsedTime();
     }
-
 }
