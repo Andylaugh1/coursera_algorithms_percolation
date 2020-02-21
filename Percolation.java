@@ -1,7 +1,5 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import java.util.ArrayList;
-
 public class Percolation {
 
     public boolean[] grid;
@@ -15,7 +13,7 @@ public class Percolation {
 
     /**
      * @param n the number of sites
-     * @throws IllegalArgumentException if {@code n < 0}
+     * @throws IllegalArgumentException if {@code n <= 0}
      */
     public Percolation(int n) {
         this.gridDimension = n;
@@ -56,10 +54,10 @@ public class Percolation {
         }
         else {
             int indexOfSiteToOpen = this.findSiteIndexFromRowAndColumn(row, col);
-            ArrayList<Integer> indexesOfAdjacentSites = getAdjacentSitesForSite(row, col);
+            int[] indexesOfAdjacentSites = getAdjacentSitesForSite(row, col);
             if (this.grid[indexOfSiteToOpen] == false) {
-                for (int i = 0; i < indexesOfAdjacentSites.size(); i++) {
-                    int adjSiteIdx = indexesOfAdjacentSites.get(i);
+                for (int i = 0; i < indexesOfAdjacentSites.length; i++) {
+                    int adjSiteIdx = indexesOfAdjacentSites[i];
                     if (this.grid[adjSiteIdx] == true) {
                         this.weightedQU.union(indexOfSiteToOpen, adjSiteIdx);
                     }
@@ -70,53 +68,60 @@ public class Percolation {
         }
     }
 
-    private ArrayList<Integer> getAdjacentSitesForSite(int row, int col) {
-        ArrayList<Integer> adjacentSites = new ArrayList<>();
+    private int[] getAdjacentSitesForSite(int row, int col) {
         int indexOfSite = this.findSiteIndexFromRowAndColumn(row, col);
         if (row > 1 && row < this.gridDimension && col > 1 && col < this.gridDimension) {
-            adjacentSites.add(indexOfSite - 1);
-            adjacentSites.add(indexOfSite + 1);
-            adjacentSites.add(indexOfSite - this.gridDimension);
-            adjacentSites.add(indexOfSite + this.gridDimension);
+            return new int[] {
+                    indexOfSite - 1, indexOfSite + 1, indexOfSite - this.gridDimension,
+                    indexOfSite + this.gridDimension
+            };
         }
         else if (row == 1 && col == 1) {
-            adjacentSites.add(indexOfSite + this.gridDimension);
-            adjacentSites.add(indexOfSite + 1);
-
+            return new int[] {
+                    indexOfSite + 1,
+                    indexOfSite + this.gridDimension
+            };
         }
         else if (row == 1 && col == this.gridDimension) {
-            adjacentSites.add(indexOfSite + this.gridDimension);
-            adjacentSites.add(indexOfSite - 1);
+            return new int[] {
+                    indexOfSite - 1,
+                    indexOfSite + this.gridDimension
+            };
         }
         else if (row == this.gridDimension && col == 1) {
-            adjacentSites.add(indexOfSite - this.gridDimension);
-            adjacentSites.add(indexOfSite + 1);
+            return new int[] {
+                    indexOfSite + 1, indexOfSite - this.gridDimension
+            };
         }
         else if (row == this.gridDimension && col == this.gridDimension) {
-            adjacentSites.add(indexOfSite - this.gridDimension);
-            adjacentSites.add(indexOfSite - 1);
+            return new int[] {
+                    indexOfSite - 1, indexOfSite - this.gridDimension
+            };
         }
         else if (col == 1) {
-            adjacentSites.add(indexOfSite - this.gridDimension);
-            adjacentSites.add(indexOfSite + this.gridDimension);
-            adjacentSites.add(indexOfSite + 1);
+            return new int[] {
+                    indexOfSite + 1, indexOfSite - this.gridDimension,
+                    indexOfSite + this.gridDimension
+            };
         }
         else if (col == this.gridDimension) {
-            adjacentSites.add(indexOfSite - this.gridDimension);
-            adjacentSites.add(indexOfSite + this.gridDimension);
-            adjacentSites.add(indexOfSite - 1);
+            return new int[] {
+                    indexOfSite - 1, indexOfSite - this.gridDimension,
+                    indexOfSite + this.gridDimension
+            };
         }
         else if (row == 1) {
-            adjacentSites.add(indexOfSite - 1);
-            adjacentSites.add(indexOfSite + 1);
-            adjacentSites.add(indexOfSite + this.gridDimension);
+            return new int[] {
+                    indexOfSite - 1, indexOfSite + 1,
+                    indexOfSite + this.gridDimension
+            };
         }
         else if (row == this.gridDimension) {
-            adjacentSites.add(indexOfSite - 1);
-            adjacentSites.add(indexOfSite + 1);
-            adjacentSites.add(indexOfSite - this.gridDimension);
+            return new int[] {
+                    indexOfSite - 1, indexOfSite + 1, indexOfSite - this.gridDimension
+            };
         }
-        return adjacentSites;
+        return new int[] { };
     }
 
     // is the site (row, col) open?

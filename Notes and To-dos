@@ -1,0 +1,6 @@
+Things to do:
+- Make sure all error catches are in place where required
+- Make sure format of output is as requested
+- Remove anything which requires an import package which is not allowed
+- Check maths and logic is correct on all the stats method
+

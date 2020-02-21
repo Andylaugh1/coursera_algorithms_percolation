@@ -10,6 +10,11 @@ public class PercolationStats {
     private int[] listOfOpenSiteNumbers;
 
     // perform independent trials on an n-by-n grid
+
+    /**
+     * @param n the number of sites
+     * @throws IllegalArgumentException if {@code n <= 0 || @code trials <= 0}
+     */
     public PercolationStats(int n, int trials) {
         this.gridDimension = n;
         this.numberOfTrials = trials;
@@ -19,7 +24,7 @@ public class PercolationStats {
 
     // sample mean of percolation threshold
     public double mean() {
-        return this.runningTotalOpenSitesPerPerc / this.numberOfTrials;
+        return StdStats.mean(this.listOfOpenSiteNumbers);
     }
 
     // sample standard deviation of percolation threshold
@@ -52,11 +57,11 @@ public class PercolationStats {
     // test client (see below)
     public static void main(String[] args) {
         Stopwatch stopwatch = new Stopwatch();
-        PercolationStats percStats = new PercolationStats(50, 30);
+        PercolationStats percStats = new PercolationStats(200, 100);
 
         int n = 0;
         while (n < percStats.numberOfTrials) {
-            Percolation percolation = new Percolation(50);
+            Percolation percolation = new Percolation(percStats.gridDimension);
             while (!percolation.percolates()) {
                 percolation
                         .open(StdRandom.uniform(1, percStats.gridDimension + 1),
