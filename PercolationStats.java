@@ -12,7 +12,8 @@ public class PercolationStats {
     // perform independent trials on an n-by-n grid
 
     /**
-     * @param n the number of sites
+     * @param n      the number of sites
+     * @param trials the number of times the test is run
      * @throws IllegalArgumentException if {@code n <= 0 || @code trials <= 0}
      */
     public PercolationStats(int n, int trials) {
