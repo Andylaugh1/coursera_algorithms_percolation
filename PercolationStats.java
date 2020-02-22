@@ -6,8 +6,8 @@ public class PercolationStats {
 
     private int gridDimension;
     private int numberOfTrials;
-    private int runningTotalOpenSitesPerPerc;
-    private int[] listOfOpenSiteNumbers;
+    private double runningTotalOpenSitesPerPerc;
+    private double[] listOfOpenSiteNumbers;
 
     // perform independent trials on an n-by-n grid
 
@@ -19,8 +19,8 @@ public class PercolationStats {
     public PercolationStats(int n, int trials) {
         this.gridDimension = n;
         this.numberOfTrials = trials;
-        this.runningTotalOpenSitesPerPerc = 0;
-        this.listOfOpenSiteNumbers = new int[trials];
+        this.runningTotalOpenSitesPerPerc = 0.00;
+        this.listOfOpenSiteNumbers = new double[trials];
     }
 
     // sample mean of percolation threshold
@@ -58,7 +58,10 @@ public class PercolationStats {
     // test client (see below)
     public static void main(String[] args) {
         Stopwatch stopwatch = new Stopwatch();
-        PercolationStats percStats = new PercolationStats(200, 100);
+        int gridDimension = Integer.parseInt(args[0]);
+        int trials = Integer.parseInt(args[1]);
+
+        PercolationStats percStats = new PercolationStats(gridDimension, trials);
 
         int n = 0;
         while (n < percStats.numberOfTrials) {
@@ -70,18 +73,20 @@ public class PercolationStats {
             }
 
             System.out.println("The number of open sites is " + percolation.numberOfOpenSites);
-            percStats.runningTotalOpenSitesPerPerc += percolation.numberOfOpenSites;
-            percStats.listOfOpenSiteNumbers[n] = percolation.numberOfOpenSites;
+            double openSitesFraction = (double) percolation.numberOfOpenSites
+                    / (double) percolation.grid.length;
+            percStats.runningTotalOpenSitesPerPerc += openSitesFraction;
+            percStats.listOfOpenSiteNumbers[n] = openSitesFraction;
             n++;
         }
         stopwatch.elapsedTime();
         System.out.println(
-                "The average number of open sites when percolation occurs is " + percStats.mean());
+                "Mean                      = " + percStats.mean());
         System.out.println(
-                "The std deviation is " + percStats.stddev());
+                "stddev                    = " + percStats.stddev());
         System.out.println(
-                "The 95% confidence bounds are low: " + percStats.confidenceLo() + "and high: "
-                        + percStats.confidenceHi());
+                "95% confidence interval   = [" + percStats.confidenceLo() + "," +
+                        percStats.confidenceHi() + "]");
         System.out.println(
                 "The total time taken was " + stopwatch.elapsedTime() + "seconds");
     }
