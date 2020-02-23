@@ -64,7 +64,7 @@
     <configuration name="PercolationStats" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="PercolationStats" />
       <module name="Algorithms, Part I" />
-      <option name="PROGRAM_PARAMETERS" value="50,30" />
+      <option name="PROGRAM_PARAMETERS" value="0 100" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>

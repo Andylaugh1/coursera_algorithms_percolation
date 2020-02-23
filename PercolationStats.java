@@ -4,22 +4,18 @@ import edu.princeton.cs.algs4.Stopwatch;
 
 public class PercolationStats {
 
-    private int gridDimension;
-    private int numberOfTrials;
-    private double runningTotalOpenSitesPerPerc;
+    private final int gridDimension;
+    private final int numberOfTrials;
     private double[] listOfOpenSiteNumbers;
 
-    // perform independent trials on an n-by-n grid
-
     /**
-     * @param n      the number of sites
-     * @param trials the number of times the test is run
-     * @throws IllegalArgumentException if {@code n <= 0 || @code trials <= 0}
+     * @param n the number of sites
+     * @throws IllegalArgumentException if {@code n <= 0} || {@code trials <= 0}
      */
+    // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
         this.gridDimension = n;
         this.numberOfTrials = trials;
-        this.runningTotalOpenSitesPerPerc = 0.00;
         this.listOfOpenSiteNumbers = new double[trials];
     }
 
@@ -33,7 +29,7 @@ public class PercolationStats {
         return StdStats.stddev(this.listOfOpenSiteNumbers);
     }
 
-    public double getMarginForError() {
+    private double getMarginForError() {
         double standardDeviation = this.stddev();
         double z = 1.96;
         double sqreOfNoOfTrials = Math.sqrt(this.numberOfTrials);
@@ -60,6 +56,7 @@ public class PercolationStats {
         Stopwatch stopwatch = new Stopwatch();
         int gridDimension = Integer.parseInt(args[0]);
         int trials = Integer.parseInt(args[1]);
+        int gridSize = gridDimension * gridDimension;
 
         PercolationStats percStats = new PercolationStats(gridDimension, trials);
 
@@ -72,10 +69,9 @@ public class PercolationStats {
                               StdRandom.uniform(1, percStats.gridDimension + 1));
             }
 
-            System.out.println("The number of open sites is " + percolation.numberOfOpenSites);
-            double openSitesFraction = (double) percolation.numberOfOpenSites
-                    / (double) percolation.grid.length;
-            percStats.runningTotalOpenSitesPerPerc += openSitesFraction;
+            System.out.println("The number of open sites is " + percolation.numberOfOpenSites());
+            double openSitesFraction = (double) percolation.numberOfOpenSites()
+                    / (double) gridSize;
             percStats.listOfOpenSiteNumbers[n] = openSitesFraction;
             n++;
         }
